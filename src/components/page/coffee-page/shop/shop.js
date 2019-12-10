@@ -1,10 +1,11 @@
 import React, {Component} from "react";
-import {coffeeError, ourCoffeeLoaded, coffeeRequested} from "../../../../actions";
+import {coffeeError, coffeeRequested, ourCoffeeLoaded} from "../../../../actions";
 import WithRestoService from "../../../hoc";
 import {connect} from "react-redux";
 import Spinner from "../../../spinner";
 import Error from "../../../error";
 import ShopItem from "./shopItem";
+import SearchPanel from "../search-panel/search-panel";
 
 class Shop extends Component {
 
@@ -18,6 +19,15 @@ class Shop extends Component {
     }
   }
 
+  filterPosts = () => {
+    const {coffeeItems, filterValue} = this.props;
+    if (filterValue === null) return coffeeItems;
+    return coffeeItems.filter(item => {
+      return item.name.toLowerCase().indexOf(filterValue) > -1
+        || item.country.toLowerCase().indexOf(filterValue.toLowerCase()) > -1
+    })
+  };
+
   render() {
     const {coffeeItems, loading, error} = this.props;
     if (loading) {
@@ -28,32 +38,13 @@ class Shop extends Component {
     }
     return (
       <>
-        <div className="row">
-          <div className="col-lg-4 offset-2">
-            <form action="#" className="shop__search">
-              <label className="shop__search-label">Looking for</label>
-              <input id="filter" type="text" placeholder="start typing here..." className="shop__search-input"/>
-            </form>
-          </div>
-          <div className="col-lg-4">
-            <div className="shop__filter">
-              <div className="shop__filter-label">
-                Or filter
-              </div>
-              <div className="shop__filter-group">
-                <button className="shop__filter-btn">Brazil</button>
-                <button className="shop__filter-btn">Kenya</button>
-                <button className="shop__filter-btn">Columbia</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <SearchPanel labelBtn={coffeeItems}/>
         <div className="row">
           <div className="col-lg-10 offset-lg-1">
             <div className="shop__wrapper">
               <ShopItem
-                coffeeItem={this.props.coffeeItems}
-                />
+                coffeeItem={this.filterPosts()}
+              />
             </div>
           </div>
         </div>
@@ -62,18 +53,19 @@ class Shop extends Component {
   }
 }
 
-const mapStateToProps = ({ourCoffee, loading, error}) => {
+const mapStateToProps = ({ourCoffee, loading, error, filterValue}) => {
   return {
-    coffeeItems:ourCoffee,
-    loading: loading,
-    error: error
+    coffeeItems: ourCoffee,
+    loading,
+    error,
+    filterValue
   }
 };
 
 const mapDispatchToProps = {
   coffeeRequested,
   ourCoffeeLoaded,
-  coffeeError
+  coffeeError,
 };
 
 export default WithRestoService()(connect(

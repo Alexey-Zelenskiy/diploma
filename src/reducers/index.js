@@ -2,7 +2,7 @@ const initialState = {
   coffee: [],
   loading: true,
   error: false,
-  filter:null,
+  filterValue:null,
   ourCoffee:[],
   pleasureCoffee:[]
 };
@@ -61,7 +61,7 @@ const reducer = (state = initialState, action) => {
     case 'COFFEE_FILTER':
       return {
         ...state,
-        filter: payload
+        filterValue: payload
       };
     case 'GET_SEPARATE_COFFEE_ITEM':
       return {

@@ -13,11 +13,14 @@ class ShopItem extends Component {
 
   render() {
     const {coffeeItem} = this.props;
+    const uniqueId = () => {
+      return `f${(~~(Math.random() * 1e8)).toString(16)}`
+    };
     return (
       <>
         {coffeeItem.map((item)=>{
           return(
-            <div className="shop__item" key={item.id} onClick={this.onItemSelected.bind(this,item.id)}>
+            <div className="shop__item" key={uniqueId(item)} onClick={this.onItemSelected.bind(this,item.id)}>
               <img src={item.url}
                    alt={item.name}/>
               <div className="shop__item-title">
